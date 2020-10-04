@@ -32,6 +32,7 @@ class Graph extends Component {
 
      drawChart = () => {
 d3.csv(data).then(starterPrices => {
+    console.dir(starterPrices)
       this.clearChart();
       const newPrices = this.state.candleData;
       const prices = starterPrices.concat(newPrices);
@@ -244,6 +245,7 @@ d3.csv(data).then(starterPrices => {
 
     componentDidMount = () => {
       this.interval = setInterval(this.nextPrice, 1);
+      console.log(data);
       this.drawChart();
     }
 

@@ -4,15 +4,28 @@
     left: 0;
 
     display: flex;
+    justify-content: space-between;
     padding: 20px;
 
     height: 45px;
-    width: 100vw;
+    width: 100%;
 
     background: #102331;
 }
 
-.Header img {
+.Settings {
+    height: 20px;
+    width: auto;
+    cursor: pointer;
+    margin-right: 60px;
+    transition: all 500ms;
+}
+
+.Setting:hover {
+    transform: rotate(90);
+}
+
+.Logo {
     height: 45px;
     width: auto;
 }

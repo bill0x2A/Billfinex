@@ -3,14 +3,24 @@ import classes from './Alert.module.css';
 
 const alert = (props) => {
 
-    let alertClasses = classes.Alert;
+    let alertClasses = [classes.Alert];
+    let message = <p>Insufficient balance for this order</p>;
+
+    if(props.success){
+        message = <p>Transaction successful!</p>
+        alertClasses.push(classes.Success);
+    }
 
     if(props.active){
-        alertClasses = [classes.Alert, classes.Active].join(' ');
+        alertClasses.push(classes.Active);
     }
+
+    alertClasses = alertClasses.join(' ');
+    console.log(props.active);
+    
     return (
         <div className={alertClasses}>
-            <p>Insufficient balance for this order</p>
+            {message}
         </div>
     )
 }

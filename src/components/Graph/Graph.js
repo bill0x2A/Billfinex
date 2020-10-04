@@ -46,7 +46,7 @@ d3.csv(data).then(starterPrices => {
                 prices[i]['Date'] = newDate;
 
             }
-            const margin = {top: 15, right: 20, bottom: 80, left: 50},
+            const margin = {top: 5, right: 20, bottom: 60, left: 50},
             w = this.props.width - margin.left - margin.right - 4,
             h = 502 - margin.top - margin.bottom;
     

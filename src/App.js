@@ -20,6 +20,7 @@ import Alert from './containers/Alert/Alert';
 class App extends Component {
 
   state = {
+    orderSuccess: false,
     showTickers : true,
     alert       : false,
     showOrderForm : true,
@@ -157,20 +158,33 @@ class App extends Component {
     let newOrderHistory = [...this.state.orderHistory];
     
     newOrderHistory.push(order);
-
-    this.setState({balances:newBalances, orderHistory:newOrderHistory, orderToCancel: order.oID});
-    this.cancelOrderHandler();
+    this.toggleSuccessHandler();
+    this.toggleAlertHandler();
+    setTimeout(this.off, 2000);
+    this.cancelOrderHandler(order.oID);
+    this.setState({balances:newBalances, orderHistory:newOrderHistory});
   }
 
   toggleAlertHandler = () => {
+    console.log("running toggleAlertHandler")
     this.setState({alert : !this.state.alert})
   }
 
-  cancelOrderHandler = () => {
+  toggleSuccessHandler = () => {
+    console.log("running toggleSuccessHandler")
+    this.setState({orderSuccess : !this.state.orderSuccess})
+  }
+
+  off = () => {
+    this.setState({alert:false, success:false});
+  }
+
+  cancelOrderHandler = (orderToCancel) => {
     let currentOrders = [...this.state.orders];
+    orderToCancel = orderToCancel || this.state.orderToCancel;
 
     currentOrders.map((order, index) => {
-      if(order.oID === this.state.orderToCancel){
+      if(order.oID === orderToCancel){
         currentOrders.splice(index, 1);
         this.setState({orders:currentOrders, orderToCancel:null, confirming:false});
       }
@@ -227,11 +241,11 @@ class App extends Component {
       for(let j=0;j<cryptos.length;j++){
         if(orders[i].coin == cryptos[j].name){
           if(orders[i].buy && orders[i].price >= cryptos[j].price){
-            console.log("running buy")
+
             this.orderFufillmentHandler(orders[i]);
           }
           if(!orders[i].buy && orders[i].price <= cryptos[j].price){
-            console.log("running sell")
+
             this.orderFufillmentHandler(orders[i])
           }
         }
@@ -242,7 +256,7 @@ class App extends Component {
       <div className="App">
         <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
         {modal}
-        <Alert active = {this.state.alert}/>
+        <Alert active = {this.state.alert} success={this.state.orderSuccess}/>
         <Header/>
         <Main>
           <Sidebar>

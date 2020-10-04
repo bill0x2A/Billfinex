@@ -1,10 +1,10 @@
 .Footer {
     position: absolute;
     bottom : 0;
-    left : 0;
+    right : 0;
     height : 80px;
     background: #102331;
-    width: 100vw;
+    width: 100%;
 
     display: flex;
     align-items: flex-end;
@@ -14,7 +14,7 @@
 }
 
 .Footer p {
- padding-right: 45px;
+ padding-right: 40px;
 
  display: flex;
  align-items: center;

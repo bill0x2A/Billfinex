@@ -1,0 +1,14 @@
+.Container {
+    background: #061e3e;
+    border: 2px solid gray;
+    display: inline;
+}
+
+.CoinDisplay {
+    display: flex;
+    align-items: center;
+    margin: 8px;
+    margin-left: 92%;
+    justify-self: end;
+    
+}

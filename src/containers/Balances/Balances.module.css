@@ -1,0 +1,54 @@
+.Balances {
+}
+
+.Heading {
+    display: flex;
+    justify-content: space-between;
+}
+
+.Heading p {
+    width: 100px;
+    margin : 5px;
+    text-align: right;
+}
+
+.Currency {
+    border-top: 1px solid white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-left: 10px;
+    padding-right: 10px;
+
+    height: 30px;
+}
+
+.Currency:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+
+.Currency img, .Currency span {
+    width: 200px;
+    color: white;
+    text-align: right;
+}
+
+.Currency p {
+    display: inline;
+    text-align: right;
+}
+
+.Currency img {
+    width: 15px;
+    display: inline;
+    margin-right: 5px;
+}
+
+.Name {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    
+}

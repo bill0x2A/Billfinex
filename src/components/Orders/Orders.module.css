@@ -1,0 +1,20 @@
+.Header {
+    display: flex;
+    justify-content: space-around;
+
+    user-select: none;
+}
+
+
+.Header span {
+    width : 140px;
+    text-align: right;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.Orders {
+    padding-bottom: 1px;
+}

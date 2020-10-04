@@ -1,0 +1,66 @@
+.GridWrapper {
+    display: grid;
+    grid-template-areas: "a";
+}
+
+.Order {
+    grid-area: a;
+    display: flex;
+    justify-content: space-around;
+
+    border-top: 1px solid gray;
+}
+
+.GridWrapper:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.Order span {
+    width : 140px;
+    text-align: right;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+img {
+    height: 14px;
+}
+
+.Cancel {
+    grid-area: a;
+    background-color: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 100%;
+    transition: all 200ms;
+    justify-self: end;
+    border-top: 1px solid gray;
+    cursor: pointer;
+}
+
+.Cancel span {
+    color: white;
+    user-select: none;
+}
+
+.NoShow {
+    width : 0;
+}
+
+.NoShow span {
+    display: none;
+    color: white;
+    user-select: none;
+}
+
+.Green {
+    color: green !important;
+}
+
+.Red {
+    color: Red !important;
+}

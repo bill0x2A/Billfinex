@@ -1,0 +1,108 @@
+.OrderForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(1fr, 3);
+    grid-gap: 7px;
+
+    padding: 10px;
+}
+
+.OrderForm select {
+    grid-area: 1 / span 1 / 1 / span 1;
+    width: 204px;
+    height: 30px;
+    border: 2px solid gray;
+    background-color: #102331;
+    color: white;
+
+    padding: 5px;
+}
+
+.UsdPrice {
+    grid-area: 2 / span 1 / 2 / span 1;
+}
+
+input:disabled,input:disabled:active {
+    background-color: gray;
+}
+
+.CoinAmount {
+    grid-area: 2 / span 1 / 2 / span 1;
+}
+
+h3 {
+    color: lightgray;
+    margin: 4px;
+    font-size: 12px;
+}
+
+input {
+    width: 190px;
+    height: 16px;
+    border: 2px solid gray;
+    background-color: #102331;
+    color: white;
+
+    padding: 5px;
+}
+
+input:active {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.Sell {
+    grid-area: 3 / span 1 / 3 / span 1;
+}
+
+.Buy {
+    grid-area: 3 / span 1 / 3 / span 1;
+}
+
+.BuyButton,.SellButton {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    cursor: pointer;
+    width: 190px;
+}
+
+.SellButton {
+    background-color: red;
+}
+
+.BuyButton {
+    background-color: green;
+}
+
+.BuyButton:hover {
+    background-color: lightgreen;
+}
+
+.SellButton:hover {
+    background-color: salmon;
+}
+
+.Total {
+    width : 204px;
+    position: relative;
+    bottom : 2px;
+    right: 2px;
+    color: white;
+    background: #102331;
+    border: 2px solid gray;
+
+    margin : 2px;
+    margin-top : 10px;
+    padding : 4px;
+
+    box-sizing: border-box;
+}
+
+.Total p {
+    margin : 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 11px;
+}

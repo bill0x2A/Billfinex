@@ -1,0 +1,77 @@
+.Container {
+    color: white;
+    background: #061e3e;
+    border: 2px solid gray;
+    margin-bottom: 14px;
+    padding: 8px;
+    padding-right: 30px;
+
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr;
+    grid-template-rows: 30px 30px;
+
+    width: 450px;
+    box-sizing: border-box;
+}
+
+.Container div {
+    text-align: right;
+}
+
+span {
+    color: grey;
+}
+
+.Logo {
+    grid-column: 1 / 2 ;
+    grid-row: 1 / 3;
+}
+
+.Logo img {
+    height: 70px;
+    width: auto;
+
+    margin-top: 4px;
+}
+
+.TickerSymbol {
+    grid-column: 2 / 3 ;
+    grid-row: 1 / 2;
+
+    font-size: large;
+}
+
+.Volume {
+    grid-column: 2 / 3 ;
+    grid-row: 2 / 3 ;
+}
+
+.Low {
+    grid-column: 2 / 3 ;
+    grid-row: 3 / 4 ;
+}
+
+.Price {
+    grid-column: 3 / 4 ;
+    grid-row: 1 / 2;
+
+    font-size: large;
+}
+
+.Change {
+    grid-column: 3 / 4 ;
+    grid-row: 2 / 3;
+}
+
+.High {
+    grid-column: 3 / 4 ;
+    grid-row: 3 / 4 ;
+}
+
+.Red {
+    color: red;
+}
+
+.Green {
+    color: green;
+}

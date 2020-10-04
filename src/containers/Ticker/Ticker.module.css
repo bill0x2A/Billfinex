@@ -1,0 +1,44 @@
+html {
+    color: white;
+
+    font-family: sans-serif;
+    font-size : 14px;
+}
+
+.Ticker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 5px;
+
+
+    border-bottom: 1px solid grey;
+
+    cursor: pointer;
+}
+
+.Ticker img {
+    height: 15px;
+}
+
+.Ticker:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.Ticker span {
+    width : 140px;
+    text-align: right;
+}
+
+.Green {
+    color: green;
+}
+
+.Red {
+    color: red;
+}
+
+.Ticker img {
+    margin-right: 10px;
+}

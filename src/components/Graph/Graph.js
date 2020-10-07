@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as _ from 'lodash';
 import data from '../../assets/scripts/Output.csv';
 import EthLogo from '../../assets/imgs/ETH.svg';
-import XrpLogo from '../../assets/imgs/XRP.svg';
+import LINKLogo from '../../assets/imgs/LINK.svg';
 import BtcLogo from '../../assets/imgs/BTC.svg';
 import EosLogo from '../../assets/imgs/EOS.svg';
 
@@ -14,8 +14,18 @@ class Graph extends Component {
 
   state = {
     firstLoad    : true,
-    candleData   : [],
-    currentPrice : this.props.coin.price,
+    candleData   : {
+        "BTC" : [],
+        "ETH" : [],
+        "LINK" : [],
+        "EOS" : []
+    },
+    currentPrice : {
+        "BTC" : this.props.cryptos[0].price,
+        "ETH" : this.props.cryptos[1].price,
+        "LINK" : this.props.cryptos[2].price,
+        "EOS" : this.props.cryptos[3].price
+    },
     counter      : 0,
     phaseLength  : 500,
     counterTrendPeriod : 50,
@@ -23,19 +33,45 @@ class Graph extends Component {
     thisPhaseCounter : 0,
     candleLimit : 800,
     internalCounter : 0,
-    trend : [],
-    counterTrend : [],
-    candleBuffer : [],
+    trend : {
+        "BTC" : [],
+        "ETH" : [],
+        "LINK" : [],
+        "EOS" : []
+    },
+    counterTrend : {
+        "BTC" : [],
+        "ETH" : [],
+        "LINK" : [],
+        "EOS" : []
+    },
+    candleBuffer : {
+        "BTC" : [],
+        "ETH" : [],
+        "LINK" : [],
+        "EOS" : []
+    },
+    thisPhase : {
+        "BTC" : [],
+        "ETH" : [],
+        "LINK" : [],
+        "EOS" : []
+    },
+    scaling : {
+        "BTC" : 0.5,
+        "ETH" : 0.03,
+        "LINK" : 0.000024,
+        "EOS" : 0.000264
+    },
     macroTrend : this.props.trend
 
   }
 
-     drawChart = () => {
+     drawChart = (coinName) => {
 d3.csv(data).then(starterPrices => {
-    console.dir(starterPrices)
       this.clearChart();
-      const newPrices = this.state.candleData;
-      const prices = starterPrices.concat(newPrices);
+      const newPrices = this.state.candleData[coinName];
+      const prices = newPrices;
             
             const months = {0 : 'Jan', 1 : 'Feb', 2 : 'Mar', 3 : 'Apr', 4 : 'May', 5 : 'Jun', 6 : 'Jul', 7 : 'Aug', 8 : 'Sep', 9 : 'Oct', 10 : 'Nov', 11 : 'Dec'}
 
@@ -244,9 +280,15 @@ d3.csv(data).then(starterPrices => {
     }
 
     componentDidMount = () => {
-      this.interval = setInterval(this.nextPrice, 1);
+      console.log("COMPONENT MOUNTED");
+      this.interval = setInterval(() => {
+          this.nextPrice("BTC");
+          this.nextPrice("ETH");
+          this.nextPrice("LINK");
+          this.nextPrice("EOS");
+      }, 1);
       console.log(data);
-      this.drawChart();
+      this.drawChart(this.props.coin.name);
     }
 
     // componentDidUpdate(prevProps) {
@@ -256,51 +298,105 @@ d3.csv(data).then(starterPrices => {
     //   }
     // }
 
-    nextPrice = () => {
+    nextPrice = (coinName) => {
 
       if(this.state.counter % this.state.phaseLength == 0){
 
             let trend = [],
             counterTrend = [],
-            thisPhase = this.phaseSelector(this.state.macroTrend);
+            thisPhaseBTC = this.phaseSelector(this.state.macroTrend),
+            thisPhaseETH = this.phaseSelector(this.state.macroTrend),
+            thisPhaseLINK = this.phaseSelector(this.state.macroTrend),
+            thisPhaseEOS = this.phaseSelector(this.state.macroTrend),
 
-        [trend, counterTrend] = this.phaseGen(thisPhase);
+        [trendBTC, counterTrendBTC] = this.phaseGen(thisPhaseBTC),
+        [trendETH, counterTrendETH] = this.phaseGen(thisPhaseETH),
+        [trendLINK, counterTrendLINK] = this.phaseGen(thisPhaseLINK),
+        [trendEOS, counterTrendEOS] = this.phaseGen(thisPhaseEOS);
+
+        const thisPhase = {
+            "BTC" : thisPhaseBTC,
+            "ETH" : thisPhaseETH,
+            "LINK" : thisPhaseLINK,
+            "EOS" : thisPhaseEOS
+        }
+        
+        const counterTrendPeriods = {
+            "BTC" : Math.round(Math.random() * 3),
+            "ETH" : Math.round(Math.random() * 2),
+            "LINK" : Math.round(Math.random() * 6),
+            "EOS" : Math.round(Math.random() * 8)
+        }
+
+        const trendy = {
+            "BTC" : trendBTC,
+            "ETH" : trendETH,
+            "LINK" : trendLINK,
+            "EOS" : trendEOS
+        }
+
+        const counterTrendy = {
+            "BTC" : counterTrendBTC,
+            "ETH" : counterTrendETH,
+            "LINK" : counterTrendLINK,
+            "EOS" : counterTrendEOS
+        }
+        
 
         this.setState({thisPhase:thisPhase,
                        thisPhaseCounter:0,
-                       counterTrendPeriods:Math.round(Math.random() * 3),
-                       trend : trend,
-                       counterTrend : counterTrend
+                       counterTrendPeriods:counterTrendPeriods,
+                       trend : trendy,
+                       counterTrend : counterTrendy
                       });
     }
 
     let decisionSelection = [],
-        plCtp = this.state.phaseLength/this.state.counterTrendPeriods;
+        plCtp = this.state.phaseLength/this.state.counterTrendPeriods[coinName];
 
-    if(this.state.thisPhase < plCtp){
-        decisionSelection = this.state.trend;
-    } else if (this.state.thisPhase < (plCtp + this.state.counterTrendPeriod)){
-        decisionSelection = this.state.counterTrend;
-    } else if (this.state.thisPhase < (2 * plCtp)){
-        decisionSelection = this.state.trend;
-    } else if (this.state.thisPhase < ((2 * plCtp) + this.state.counterTrendPeriod)){
-        decisionSelection = this.state.counterTrend;
-    } else if (this.state.thisPhase < (3 * plCtp)){
-        decisionSelection = this.state.trend;
-    } else if (this.state.thisPhase < ((3 * plCtp) + this.state.counterTrendPeriod)){
-        decisionSelection = this.state.counterTrend;
+    if(this.state.thisPhase[coinName] < plCtp){
+        decisionSelection = this.state.trend[coinName];
+    } else if (this.state.thisPhase[coinName] < (plCtp + this.state.counterTrendPeriod)){
+        decisionSelection = this.state.counterTrend[coinName];
+    } else if (this.state.thisPhase[coinName] < (2 * plCtp)){
+        decisionSelection = this.state.trend[coinName];
+    } else if (this.state.thisPhase[coinName] < ((2 * plCtp) + this.state.counterTrendPeriod)){
+        decisionSelection = this.state.counterTrend[coinName];
+    } else if (this.state.thisPhase[coinName] < (3 * plCtp)){
+        decisionSelection = this.state.trend[coinName];
+    } else if (this.state.thisPhase[coinName] < ((3 * plCtp) + this.state.counterTrendPeriod)){
+        decisionSelection = this.state.counterTrend[coinName];
+    } else if (this.state.thisPhase[coinName] < (4 * plCtp)){
+        decisionSelection = this.state.trend[coinName];
+    } else if (this.state.thisPhase[coinName] < ((4 * plCtp) + this.state.counterTrendPeriod)){
+        decisionSelection = this.state.counterTrend[coinName];
+    } else if (this.state.thisPhase[coinName] < (5 * plCtp)){
+        decisionSelection = this.state.trend[coinName];
+    } else if (this.state.thisPhase[coinName] < ((5 * plCtp) + this.state.counterTrendPeriod)){
+        decisionSelection = this.state.counterTrend[coinName];
+    } else if (this.state.thisPhase[coinName] < (6 * plCtp)){
+        decisionSelection = this.state.trend[coinName];
+    } else if (this.state.thisPhase[coinName] < ((6 * plCtp) + this.state.counterTrendPeriod)){
+        decisionSelection = this.state.counterTrend[coinName];
+    } else if (this.state.thisPhase[coinName] < (7 * plCtp)){
+        decisionSelection = this.state.trend[coinName];
+    } else if (this.state.thisPhase[coinName] < ((7 * plCtp) + this.state.counterTrendPeriod)){
+        decisionSelection = this.state.counterTrend[coinName];
     } else {
-        decisionSelection = this.state.trend;
+        decisionSelection = this.state.trend[coinName];
     }
 
     let randomIndex = Math.round(Math.random() * (decisionSelection.length - 1)),   
-        newPrice =  this.state.currentPrice;
+        newPrice =  this.state.currentPrice[coinName];
 
     if(newPrice > 1){
-        newPrice += (decisionSelection[randomIndex]);
-        this.setState({currentPrice:newPrice});
+        newPrice += (decisionSelection[randomIndex] * this.state.scaling[coinName]);
+        let currentPrice = this.state.currentPrice;
+        currentPrice[coinName] = newPrice;
+        this.setState({currentPrice:currentPrice});
     }    
     
+    if(coinName === "BTC"){
     this.setState({
                    candleTracker    : this.state.candleTracker+=1,
                    counter          : this.state.counter += 1,
@@ -309,22 +405,51 @@ d3.csv(data).then(starterPrices => {
 
 
     if(this.state.candleTracker > this.state.candleLimit){
-        let newCandleData = [...this.state.candleData];
-        newCandleData.push(this.tradesToCandles(this.state.candleBuffer))
-        this.drawChart();
-        this.props.changePrice(newPrice);
+        const coins = ["BTC", "ETH", "LINK", "EOS"];
+        let newCandleData = this.state.candleData;
+
+        for(let i=0;i<coins.length;i++){
+            newCandleData[coins[i]].push(this.tradesToCandles(this.state.candleBuffer[coins[i]]))
+        }
+
+        this.drawChart(this.props.coin.name);
+        this.props.changePrice([
+            {
+                name : "BTC",
+                price : newPrice
+            },
+            {
+                name : "ETH",
+                price : this.state.candleBuffer["ETH"][this.state.candleBuffer["ETH"].length - 1]
+            },
+            {
+                name : "LINK",
+                price : this.state.candleBuffer["LINK"][this.state.candleBuffer["LINK"].length - 1]
+            },
+            {
+                name : "EOS",
+                price : this.state.candleBuffer["EOS"][this.state.candleBuffer["EOS"].length - 1]
+            },
+        ]
+        );
 
         this.setState({
                       candleData    : newCandleData,
-                      candleBuffer  : [],
+                      candleBuffer  : {
+                        "BTC" : [],
+                        "ETH" : [],
+                        "LINK" : [],
+                        "EOS" : []
+                    },
                       candleTracker : 0
                     })
     }
 
-    let newCandleBuffer = [...this.state.candleBuffer];
-    newCandleBuffer.push(newPrice);
-    this.setState({candleBuffer:newCandleBuffer});
+}
 
+    let newCandleBuffer = this.state.candleBuffer;
+    newCandleBuffer[coinName].push(newPrice);
+    this.setState({candleBuffer:newCandleBuffer});
      }
 
     tradesToCandles = (trades) => {
@@ -400,7 +525,7 @@ phaseSelector = (marketConditions) => {
 
   switch(marketConditions){
       case "normal":
-          nextPhaseDomain = this.marketArrayGen(1, 4, 4, 3, 1);
+          nextPhaseDomain = this.marketArrayGen(1, 4, 5, 4, 1);
           break;
       case "bull":
           nextPhaseDomain = this.marketArrayGen(4, 3, 0, 1, 1);
@@ -414,6 +539,13 @@ phaseSelector = (marketConditions) => {
   return (nextPhaseDomain[randomIndex]);
 }
 
+shouldComponentUpdate = (nextProps) => {
+    if(nextProps.coin.name !== this.props.coin.name){
+        this.drawChart(nextProps.coin.name);
+    }
+    return true;
+}
+
     render () {
 
       let coinLogo = null;
@@ -425,8 +557,8 @@ phaseSelector = (marketConditions) => {
         case "ETH":
             coinLogo = EthLogo;
             break;
-        case "XRP":
-            coinLogo = XrpLogo;
+        case "LINK":
+            coinLogo = LINKLogo;
             break;
         case "EOS":
             coinLogo = EosLogo;

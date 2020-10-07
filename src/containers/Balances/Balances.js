@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classes from './Balances.module.css';
 import EthLogo from '../../assets/imgs/ETH.svg';
-import XrpLogo from '../../assets/imgs/XRP.svg';
+import LINKLogo from '../../assets/imgs/LINK.svg';
 import BtcLogo from '../../assets/imgs/BTC.svg';
 import EosLogo from '../../assets/imgs/EOS.svg';
 import UsdtLogo from '../../assets/imgs/USDT.svg';
@@ -35,8 +35,8 @@ const balances = (props) => {
                 fundingBalance  : 0
             },
             {
-                name : "XRP",
-                exchangeBalance : props.balances.XRP,
+                name : "LINK",
+                exchangeBalance : props.balances.LINK,
                 marginBalance   : 0,
                 fundingBalance  : 0
             }
@@ -49,8 +49,8 @@ const balances = (props) => {
                 return BtcLogo;
             case "ETH":
                 return EthLogo;
-            case "XRP":
-                return XrpLogo;
+            case "LINK":
+                return LINKLogo;
             case "EOS":
                 return EosLogo;
             case "USDT":

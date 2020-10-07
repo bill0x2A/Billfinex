@@ -1,7 +1,7 @@
 import classes from './CoinDisplay.module.css';
 import React from 'react';
 import EthLogo from '../../assets/imgs/ETH.svg';
-import XrpLogo from '../../assets/imgs/XRP.svg';
+import LINKLogo from '../../assets/imgs/LINK.svg';
 import BtcLogo from '../../assets/imgs/BTC.svg';
 import EosLogo from '../../assets/imgs/EOS.svg';
 
@@ -16,8 +16,8 @@ const coinDisplay = props => {
         case "ETH":
             coinLogo = EthLogo;
             break;
-        case "XRP":
-            coinLogo = XrpLogo;
+        case "LINK":
+            coinLogo = LINKLogo;
             break;
         case "EOS":
             coinLogo = EosLogo;

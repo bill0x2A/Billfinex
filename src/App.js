@@ -16,6 +16,7 @@ import Orders from './components/Orders/Orders';
 import Modal from './containers/Modal/Modal';
 import Draggable from 'react-draggable';
 import Alert from './containers/Alert/Alert';
+import Tutorial from './containers/Tutorial/Tutorial';
 
 class App extends Component {
 
@@ -43,8 +44,8 @@ class App extends Component {
         volume : 240958551
       },
       {
-        name : "XRP",
-        price : 0.250,
+        name : "LINK",
+        price : 8.82,
         lastDay : 1.84,
         volume : 24587292
       },
@@ -56,11 +57,11 @@ class App extends Component {
       }      
     ],
     balances : {
-      BTC : 0.7824,
-      ETH : 150,
+      BTC : 0,
+      ETH : 0,
       USDT : 30000,
-      EOS : 4,
-      XRP : 820
+      EOS : 0,
+      LINK : 0
     },
     selectedCoin : {
       name : "BTC",
@@ -121,7 +122,7 @@ class App extends Component {
     let currentOrders = [...this.state.orders];
 
     if((!order.buy && this.state.balances[order.coin] >= order.quantity) || (order.buy && this.state.balances.USDT >= (order.quantity * order.price))){
-      currentOrders.push(order);
+      currentOrders.unshift(order);
 
       let newBalances = this.state.balances;
 
@@ -143,21 +144,16 @@ class App extends Component {
 
   orderFufillmentHandler = (order) => {
     let newBalances = this.state.balances;
-    console.dir(order.coin);
-    console.dir(newBalances[order.coin]);
-
 
     if(order.buy){
-      console.log(order.coin + "  " + newBalances[order.coin]);
       newBalances[order.coin] = parseFloat(newBalances[order.coin]) + parseFloat(order.quantity);
-      console.dir(newBalances);
     } else {
       newBalances.USDT += (order.quantity * order.price);
     }
 
     let newOrderHistory = [...this.state.orderHistory];
     
-    newOrderHistory.push(order);
+    newOrderHistory.unshift(order);
     this.toggleSuccessHandler();
     this.toggleAlertHandler();
     setTimeout(this.off, 2000);
@@ -166,12 +162,12 @@ class App extends Component {
   }
 
   toggleAlertHandler = () => {
-    console.log("running toggleAlertHandler")
+
     this.setState({alert : !this.state.alert})
   }
 
   toggleSuccessHandler = () => {
-    console.log("running toggleSuccessHandler")
+
     this.setState({orderSuccess : !this.state.orderSuccess})
   }
 
@@ -192,23 +188,19 @@ class App extends Component {
 
   }
 
-  priceChangeHandler = (price) => {
-    let i = 0;
-    for(i=0;i<this.state.cryptos.length;i++){
-      if(this.state.cryptos[i].name == this.state.selectedCoin.name){
-        let selectedCoin = this.state.selectedCoin,
-            coin         = this.state.cryptos[i],
-            cryptos      = [...this.state.cryptos];
+  priceChangeHandler = (prices) => {
 
-            selectedCoin.price = price;
-            coin.price = price;
+    let cryptos = [...this.state.cryptos];
 
-            cryptos.splice(i, 1);
-            cryptos.unshift(coin)
-
-        this.setState({selectedCoin : selectedCoin, cryptos : cryptos})
+    for(let i=0;i<prices.length;i++){
+      for(let j=0;j<cryptos.length;j++){
+        if(prices[i].name === cryptos[j].name){
+          cryptos[j].price = parseFloat(prices[i].price);
+          cryptos[j].volume += Math.round(Math.random() * 3000);
+        }
       }
     }
+    this.setState({cryptos:cryptos});
   }
 
   closeModalHandler = () => {
@@ -256,8 +248,10 @@ class App extends Component {
       <div className="App">
         <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
         {modal}
+
         <Alert active = {this.state.alert} success={this.state.orderSuccess}/>
         <Header/>
+
         <Main>
           <Sidebar>
             <CoinDisplay coin = {selectedCoin}/>
@@ -282,7 +276,8 @@ class App extends Component {
               width = {newWidth}
               coin={this.state.selectedCoin}
               trend={"normal"}
-              changePrice={newPrice => {this.priceChangeHandler(newPrice)}}
+              changePrice={newPrices => {this.priceChangeHandler(newPrices)}}
+              cryptos = {this.state.cryptos}
               />
             <Dropdown name={"ORDERS (" + this.state.orders.length + ")"} width = {newWidth} click = {this.changeShowOrdersHandler} show = {this.state.showOrders}>
                 <Orders orders={this.state.orders} cancel = {(oID) => this.checkCancelConfirmation(oID)} cryptos = {this.state.cryptos}/>

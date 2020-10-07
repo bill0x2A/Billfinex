@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classes from './Order.module.css';
 import EthLogo from '../../../assets/imgs/ETH.svg';
-import XrpLogo from '../../../assets/imgs/XRP.svg';
+import LINKLogo from '../../../assets/imgs/LINK.svg';
 import BtcLogo from '../../../assets/imgs/BTC.svg';
 import EosLogo from '../../../assets/imgs/EOS.svg';
 import UsdtLogo from '../../../assets/imgs/USDT.svg';
@@ -47,8 +47,8 @@ class Order extends Component {
         case "ETH":
             coinLogo =  EthLogo;
             break;
-        case "XRP":
-            coinLogo =  XrpLogo;
+        case "LINK":
+            coinLogo =  LINKLogo;
             break;
         case "EOS":
             coinLogo =  EosLogo;

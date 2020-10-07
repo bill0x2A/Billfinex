@@ -15,8 +15,7 @@ const alert = (props) => {
         alertClasses.push(classes.Active);
     }
 
-    alertClasses = alertClasses.join(' ');
-    console.log(props.active);
+    alertClasses = alertClasses.join(' ');  
     
     return (
         <div className={alertClasses}>

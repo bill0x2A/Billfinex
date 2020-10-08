@@ -1,0 +1,9 @@
+.particles {
+    position: fixed;
+    top: 0;
+}
+
+.particle {
+    position: absolute;
+    transition: all 5s ease-out;
+  }

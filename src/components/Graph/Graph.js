@@ -71,7 +71,10 @@ class Graph extends Component {
 d3.csv(data).then(starterPrices => {
       this.clearChart();
       const newPrices = this.state.candleData[coinName];
-      const prices = newPrices;
+      let prices = newPrices;
+      if(coinName === "BTC"){
+             prices = starterPrices.concat(newPrices);
+            }
             
             const months = {0 : 'Jan', 1 : 'Feb', 2 : 'Mar', 3 : 'Apr', 4 : 'May', 5 : 'Jun', 6 : 'Jul', 7 : 'Aug', 8 : 'Sep', 9 : 'Oct', 10 : 'Nov', 11 : 'Dec'}
 
@@ -257,7 +260,7 @@ d3.csv(data).then(starterPrices => {
               word,
               line = [],
               lineNumber = 0,
-              lineHeight = 1.1, // ems
+              lineHeight = 1.1,
               y = text.attr("y"),
               dy = parseFloat(text.attr("dy")),
               tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
@@ -280,23 +283,16 @@ d3.csv(data).then(starterPrices => {
     }
 
     componentDidMount = () => {
-      console.log("COMPONENT MOUNTED");
       this.interval = setInterval(() => {
           this.nextPrice("BTC");
           this.nextPrice("ETH");
           this.nextPrice("LINK");
           this.nextPrice("EOS");
+          this.props.checkOrderHandler();
       }, 1);
       console.log(data);
       this.drawChart(this.props.coin.name);
     }
-
-    // componentDidUpdate(prevProps) {
-    //   if(prevProps !== this.props){
-    //     this.clearChart();
-    //     this.drawChart();
-    //   }
-    // }
 
     nextPrice = (coinName) => {
 

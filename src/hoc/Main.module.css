@@ -1,8 +1,11 @@
 .Main {
     margin: 14px;
     margin-top: 70px;
+    height: 100%;
 
-    display: flex;
+    display: grid;
+    grid-template-columns: 428px 1fr;
+    grid-template-rows: 1fr 45px;
+    grid-gap: 20px;
 
-    margin-bottom : 100px;
 }

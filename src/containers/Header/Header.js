@@ -6,8 +6,7 @@ import Settings from '../../assets/imgs/settings.png';
 const Header = (props) => {
     return (
         <div className={classes.Header}>
-            <img className={classes.Logo} src={Logo}/>
-            <img className={classes.Settings} src={Settings}/>
+           <img className={classes.Logo} src={Logo}/>
         </div>
     )
 }

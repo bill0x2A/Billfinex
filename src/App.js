@@ -14,13 +14,19 @@ import Sidebar from './hoc/Sidebar';
 import Right from './hoc/Right.js';
 import Orders from './components/Orders/Orders';
 import Modal from './containers/Modal/Modal';
-import Draggable from 'react-draggable';
 import Alert from './containers/Alert/Alert';
 import Tutorial from './containers/Tutorial/Tutorial';
+import classes from './App.module.css';
+import Particles from './containers/Confetti/Confetti';
 
 class App extends Component {
 
+  static id = 1;
+
   state = {
+    playing : true,
+    particles : [],
+    tutorial : true,
     orderSuccess: false,
     showTickers : true,
     alert       : false,
@@ -74,6 +80,12 @@ class App extends Component {
     orders : [
     ],
     orderHistory : []
+  }
+
+  clean(id) {
+    this.setState({
+      particles: this.state.particles.filter(_id => _id !== id)
+    });
   }
 
   componentDidMount = () => {
@@ -147,6 +159,7 @@ class App extends Component {
 
     if(order.buy){
       newBalances[order.coin] = parseFloat(newBalances[order.coin]) + parseFloat(order.quantity);
+      console.log("Adding " + order.quantity + order.name);
     } else {
       newBalances.USDT += (order.quantity * order.price);
     }
@@ -177,12 +190,25 @@ class App extends Component {
 
   cancelOrderHandler = (orderToCancel) => {
     let currentOrders = [...this.state.orders];
-    orderToCancel = orderToCancel || this.state.orderToCancel;
 
     currentOrders.map((order, index) => {
       if(order.oID === orderToCancel){
         currentOrders.splice(index, 1);
-        this.setState({orders:currentOrders, orderToCancel:null, confirming:false});
+        this.setState({orders:currentOrders});
+      }
+    })
+
+  }
+
+  manualCancelOrderHandler = () => {
+    let currentOrders = [...this.state.orders],
+    newBalances = this.state.balances;
+
+    currentOrders.map((order, index) => {
+      if(order.oID === this.state.orderToCancel){
+        newBalances.USDT += (order.price * order.quantity);
+        currentOrders.splice(index, 1);
+        this.setState({orders:currentOrders, orderToCancel:null, confirming:false, balances:newBalances});
       }
     })
 
@@ -201,6 +227,9 @@ class App extends Component {
       }
     }
     this.setState({cryptos:cryptos});
+    if(this.calculateTotalWealth() > this.state.goal && this.state.playing){
+      this.goalReachedHandler();
+    }
   }
 
   closeModalHandler = () => {
@@ -209,25 +238,12 @@ class App extends Component {
 
   checkCancelConfirmation = (oID) => {
     this.setState({confirming:true, orderToCancel:oID})
+    console.log("IN STATE :" + this.state.orderToCancel);
   }
 
-  render(){
-
-    let selectedCoin = this.state.selectedCoin,
-        modal        = null,
-        alert        = null;
-    const newWidth = this.state.width - 520;
-
-    if(this.state.confirming){
-      modal =  <Modal close = {this.closeModalHandler} confirm = {this.cancelOrderHandler}/>
-    }
-
-    if(this.state.alert){
-      alert = <Alert/>
-    }
-
+  checkOrderHandler = () => {
     const orders = this.state.orders,
-          cryptos = this.state.cryptos;
+    cryptos = this.state.cryptos;
 
     for(let i=0;i<orders.length;i++){
       for(let j=0;j<cryptos.length;j++){
@@ -243,17 +259,79 @@ class App extends Component {
         }
       }
     }
+  }
+
+  endTutorial = (starting, goal) => {
+    let newBalances = this.state.balances;
+
+    newBalances.USDT = starting;
+    this.setState({balances:newBalances, tutorial:false, goal:goal})
+  }
+
+  calculateTotalWealth = () => {
+    const balances = this.state.balances
+    let totalValue = 0;
+
+    for (var key of Object.keys(balances)) {
+      let price = 0;
+      for(let i=0;i<this.state.cryptos.length;i++){
+        if(key === this.state.cryptos[i].name){
+          price = this.state.cryptos[i].price;
+        }
+      }
+      if(key !== "USDT"){
+        totalValue += (balances[key] * price)
+    }
+  }
+    totalValue += balances.USDT;  
+    return totalValue;
+  }
+
+  goalReachedHandler = () => {
+    const id = App.id;
+    App.id++;
+    
+    this.setState({
+      particles: [...this.state.particles, id]
+    });
+    setTimeout(() => {
+      this.clean(id);
+    }, 5000);
+    this.setState({playing:false})
+  }
+
+  render(){
+
+    let selectedCoin = this.state.selectedCoin,
+        modal        = null,
+        alert        = null;
+    const newWidth = this.state.width - 520;
+    const {innerWidth} = window
+
+    if(this.state.confirming){
+      modal =  <Modal close = {this.closeModalHandler} confirm = {this.manualCancelOrderHandler}/>
+    }
+
+    if(this.state.alert){
+      alert = <Alert/>
+    }
+
 
     return (
       <div className="App">
+        {this.state.particles.map(id => (
+          <Particles key={id} count={Math.floor(innerWidth / 20)}/>
+        ))}
         <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet"></link>
         {modal}
+        <Tutorial show = {this.state.tutorial} endTutorial = {(starting, goal) => this.endTutorial(starting, goal)}/>
 
         <Alert active = {this.state.alert} success={this.state.orderSuccess}/>
         <Header/>
-
+          
         <Main>
           <Sidebar>
+
             <CoinDisplay coin = {selectedCoin}/>
 
             <Dropdown name = {"TICKERS"}click = {this.changeShowTickerHandler} width = {'450px'} show={this.state.showTickers}>
@@ -267,7 +345,7 @@ class App extends Component {
             </Dropdown>
 
             <Dropdown name = {"BALANCES"} click = {this.changeShowBalancesHandler} width = {'450px'} show={this.state.showBalances}>
-              <Balaces balances = {this.state.balances}/>
+              <Balaces balances = {this.state.balances} total = {this.calculateTotalWealth()}/>
             </Dropdown>
 
           </Sidebar>
@@ -278,6 +356,8 @@ class App extends Component {
               trend={"normal"}
               changePrice={newPrices => {this.priceChangeHandler(newPrices)}}
               cryptos = {this.state.cryptos}
+              checkOrderHandler = {this.checkOrderHandler}
+              className = {classes.Graph}
               />
             <Dropdown name={"ORDERS (" + this.state.orders.length + ")"} width = {newWidth} click = {this.changeShowOrdersHandler} show = {this.state.showOrders}>
                 <Orders orders={this.state.orders} cancel = {(oID) => this.checkCancelConfirmation(oID)} cryptos = {this.state.cryptos}/>
@@ -285,9 +365,10 @@ class App extends Component {
             <Dropdown name={"ORDER HISTORY (" + this.state.orderHistory.length + ")"} width = {newWidth} click = {this.changeShowOrderHistoryHandler} show = {this.state.showOrderHistory}>
                 <Orders history orders={this.state.orderHistory} cancel = { () => console.log('') }/>
             </Dropdown>
-          </Right>
+          </Right>         
         </Main>
         <Footer/>
+
       </div>
     );}
 }

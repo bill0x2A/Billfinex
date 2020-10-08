@@ -11,7 +11,7 @@ class Orders extends Component {
 
     if(this.props.orders){
         content = this.props.orders.map(order => <Order cancel = {() => {
-            console.log(order.oID);
+            console.log("OrderID!" + order.oID);
             this.props.cancel(order.oID)}
         }
             order={order}

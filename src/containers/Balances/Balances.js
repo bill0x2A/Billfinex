@@ -76,6 +76,7 @@ const balances = (props) => {
                         )
                      )
                     }
+                    <div className={classes.Total}>TOTAL WEALTH: {props.total} USDT</div>
             </div>
         )
 }

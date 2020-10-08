@@ -15,10 +15,19 @@ class Tutorial extends Component {
     profitGoalChangeHandler = (e) => {
         this.setState({profitGoal: e.target.value})
     }
+
     render (){
+
+        let containerClasses = classes.Container,
+            tutorialClasses = classes.Tutorial;
+
+        if(!this.props.show){
+            containerClasses = [classes.Container, classes.ContainerNoShow].join(' ');
+            tutorialClasses = [classes.Tutorial, classes.TutorialNoShow].join(' ');
+        }
     return (
-        <div className={classes.Container}>
-            <div className={classes.Tutorial}>
+        <div className={containerClasses}>
+            <div className={tutorialClasses}>
                 <div className = {classes.Header}>
                     <h2>Welcome to Billfinex</h2>
                 </div>
@@ -27,7 +36,7 @@ class Tutorial extends Component {
                 <p>The different coins all have their own behaiviours, try and turn your starting capital we've given you into untold riches!</p>
                 <p>Buy and sell your coins by placing buy and sell orders on the left</p>
                 <p>Click through the different coins to see all the various price action!</p>
-                <p>Enjoy playing around</p>
+                <p>Enjoy playing around, if you hit your set goal you'll get <strong>a nice surprise!</strong></p>
                 <div className = {classes.Inputs}>
                     <div className={classes.Starting}>
                         <h3>Starting Money</h3>
@@ -50,7 +59,7 @@ class Tutorial extends Component {
 
                 </div>
                 <div className = {classes.LetsGo}
-                    onClick = {this.props.endTutorial}>Let's Go!</div>
+                    onClick = {() => this.props.endTutorial(this.state.startingQuantity, this.state.profitGoal)}>Let's Go!</div>
                 </div>
             </div>
         </div>

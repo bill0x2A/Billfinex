@@ -6,6 +6,8 @@
     display: flex;
     justify-content: space-between;
     padding: 20px;
+    padding-left: 0px;
+    padding-right: 0px;
 
     height: 45px;
     width: 100%;
@@ -15,9 +17,9 @@
 
 .Settings {
     height: 20px;
+    margin-right: 45px;
     width: auto;
     cursor: pointer;
-    margin-right: 60px;
     transition: all 500ms;
 }
 
@@ -28,4 +30,5 @@
 .Logo {
     height: 45px;
     width: auto;
+    margin-left: 20px;
 }

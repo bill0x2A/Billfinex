@@ -185,6 +185,7 @@ class App extends Component {
   }
 
   off = () => {
+    this.toggleSuccessHandler();
     this.setState({alert:false, success:false});
   }
 
